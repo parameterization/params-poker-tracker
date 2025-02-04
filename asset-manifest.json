@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/params-poker-tracker/static/css/main.5ecd60fb.chunk.css",
+    "main.js": "/params-poker-tracker/static/js/main.b44d9c89.chunk.js",
+    "main.js.map": "/params-poker-tracker/static/js/main.b44d9c89.chunk.js.map",
+    "runtime-main.js": "/params-poker-tracker/static/js/runtime-main.e1f89a03.js",
+    "runtime-main.js.map": "/params-poker-tracker/static/js/runtime-main.e1f89a03.js.map",
+    "static/js/2.05245c5c.chunk.js": "/params-poker-tracker/static/js/2.05245c5c.chunk.js",
+    "static/js/2.05245c5c.chunk.js.map": "/params-poker-tracker/static/js/2.05245c5c.chunk.js.map",
+    "static/js/3.162c8b78.chunk.js": "/params-poker-tracker/static/js/3.162c8b78.chunk.js",
+    "static/js/3.162c8b78.chunk.js.map": "/params-poker-tracker/static/js/3.162c8b78.chunk.js.map",
+    "index.html": "/params-poker-tracker/index.html",
+    "precache-manifest.6677bbf25e41fb9dc4de62b7700cec5f.js": "/params-poker-tracker/precache-manifest.6677bbf25e41fb9dc4de62b7700cec5f.js",
+    "service-worker.js": "/params-poker-tracker/service-worker.js",
+    "static/css/main.5ecd60fb.chunk.css.map": "/params-poker-tracker/static/css/main.5ecd60fb.chunk.css.map",
+    "static/js/2.05245c5c.chunk.js.LICENSE.txt": "/params-poker-tracker/static/js/2.05245c5c.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.e1f89a03.js",
+    "static/js/2.05245c5c.chunk.js",
+    "static/css/main.5ecd60fb.chunk.css",
+    "static/js/main.b44d9c89.chunk.js"
+  ]
+}

@@ -155,7 +155,7 @@ const App = () => {
   return (
     <div className="p-4">
       <div className="flex justify-between mb-6">
-        <h1 className="text-2xl font-bold">Param's Poker Tracker</h1>
+        <h1 className="text-2xl font-bold">🃏 Param's Poker Tracker</h1>
         <div className="flex gap-2">
           <button
             type="button"
@@ -211,7 +211,7 @@ const App = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-4">
           <div>
-            <h2 className="text-xl font-bold mb-2">Add Player</h2>
+            <h2 className="text-xl font-bold mb-2">👥 Add Player</h2>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -237,7 +237,7 @@ const App = () => {
           </div>
 
           <div>
-            <h2 className="text-xl font-bold mb-2">Players</h2>
+            <h2 className="text-xl font-bold mb-2">🎯 Players</h2>
             <div className="border rounded">
               {players.map((player, index) => (
                 <div
@@ -264,7 +264,7 @@ const App = () => {
 
         <div className="space-y-4">
           <div>
-            <h2 className="text-xl font-bold mb-2">Add Group</h2>
+            <h2 className="text-xl font-bold mb-2">👥 Add Group</h2>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -290,7 +290,7 @@ const App = () => {
           </div>
 
           <div>
-            <h2 className="text-xl font-bold mb-2">Groups</h2>
+            <h2 className="text-xl font-bold mb-2">🎲 Groups</h2>
             <div className="border rounded">
               {groups.map((group, index) => (
                 <div
@@ -312,7 +312,7 @@ const App = () => {
       </div>
 
       <div className="mt-8">
-        <h2 className="text-xl font-bold mb-4">Update Money</h2>
+        <h2 className="text-xl font-bold mb-4">💰 Update Money</h2>
         <form
           onSubmit={handleMoneyUpdate}
           className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl"
@@ -397,7 +397,7 @@ const App = () => {
       </div>
 
       <div className="mt-8">
-        <h2 className="text-xl font-bold mb-4">Leaderboard</h2>
+        <h2 className="text-xl font-bold mb-4">🏆 Leaderboard</h2>
         <div className="border rounded">
           {leaderboard
             .slice(page * pageSize, (page + 1) * pageSize)

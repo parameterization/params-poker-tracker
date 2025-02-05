@@ -496,8 +496,8 @@ const App = () => {
           </div>
         </div>
       )}
-      <div className="text-center text-gray-600 py-4 mt-8 border-t">
-        Designed with ♠️ by P. Sampat
+      <div className="text-center text-sm text-gray-500 py-2 mt-4 border-t">
+        Designed with ♠️ by Param Sampat
       </div>
     </div>
   );

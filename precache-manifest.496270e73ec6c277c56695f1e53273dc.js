@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "f29794e479a572b4b3c1830ed0370a8a",
+    "revision": "794022e5d2443dd5252921eda7f73df2",
     "url": "/params-poker-tracker/index.html"
   },
   {
-    "revision": "a814a6369cfbe3b7b2e7",
+    "revision": "8d014fd300dab1eaa2b8",
     "url": "/params-poker-tracker/static/css/main.5ecd60fb.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/params-poker-tracker/static/js/3.162c8b78.chunk.js"
   },
   {
-    "revision": "a814a6369cfbe3b7b2e7",
-    "url": "/params-poker-tracker/static/js/main.ddc86db4.chunk.js"
+    "revision": "8d014fd300dab1eaa2b8",
+    "url": "/params-poker-tracker/static/js/main.64191958.chunk.js"
   },
   {
     "revision": "c146537bfbdc08c0ad5a",

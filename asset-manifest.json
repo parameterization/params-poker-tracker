@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/params-poker-tracker/static/css/main.5ecd60fb.chunk.css",
-    "main.js": "/params-poker-tracker/static/js/main.ddc86db4.chunk.js",
-    "main.js.map": "/params-poker-tracker/static/js/main.ddc86db4.chunk.js.map",
+    "main.js": "/params-poker-tracker/static/js/main.64191958.chunk.js",
+    "main.js.map": "/params-poker-tracker/static/js/main.64191958.chunk.js.map",
     "runtime-main.js": "/params-poker-tracker/static/js/runtime-main.e1f89a03.js",
     "runtime-main.js.map": "/params-poker-tracker/static/js/runtime-main.e1f89a03.js.map",
     "static/js/2.05245c5c.chunk.js": "/params-poker-tracker/static/js/2.05245c5c.chunk.js",
@@ -10,7 +10,7 @@
     "static/js/3.162c8b78.chunk.js": "/params-poker-tracker/static/js/3.162c8b78.chunk.js",
     "static/js/3.162c8b78.chunk.js.map": "/params-poker-tracker/static/js/3.162c8b78.chunk.js.map",
     "index.html": "/params-poker-tracker/index.html",
-    "precache-manifest.27f65f339659db23dc7bf23922c860e7.js": "/params-poker-tracker/precache-manifest.27f65f339659db23dc7bf23922c860e7.js",
+    "precache-manifest.496270e73ec6c277c56695f1e53273dc.js": "/params-poker-tracker/precache-manifest.496270e73ec6c277c56695f1e53273dc.js",
     "service-worker.js": "/params-poker-tracker/service-worker.js",
     "static/css/main.5ecd60fb.chunk.css.map": "/params-poker-tracker/static/css/main.5ecd60fb.chunk.css.map",
     "static/js/2.05245c5c.chunk.js.LICENSE.txt": "/params-poker-tracker/static/js/2.05245c5c.chunk.js.LICENSE.txt"
@@ -19,6 +19,6 @@
     "static/js/runtime-main.e1f89a03.js",
     "static/js/2.05245c5c.chunk.js",
     "static/css/main.5ecd60fb.chunk.css",
-    "static/js/main.ddc86db4.chunk.js"
+    "static/js/main.64191958.chunk.js"
   ]
 }

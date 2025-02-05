@@ -155,7 +155,7 @@ const App = () => {
   return (
     <div className="p-4">
       <div className="flex justify-between mb-6">
-        <h1 className="text-2xl font-bold">🃏 Param's Poker Tracker</h1>
+        <h1 className="text-2xl font-bold">🃏 Poker Stats Tracker</h1>
         <div className="flex gap-2">
           <button
             type="button"
@@ -496,6 +496,9 @@ const App = () => {
           </div>
         </div>
       )}
+      <div className="text-center text-gray-600 py-4 mt-8 border-t">
+        Designed with ♠️ by Param Sampat
+      </div>
     </div>
   );
 };

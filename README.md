@@ -1,4 +1,4 @@
-# Param's Poker Tracker 🃏
+# Poker Stats Tracker 🃏
 
 Minimalist web application to track poker game statistics and manage player performance.
 

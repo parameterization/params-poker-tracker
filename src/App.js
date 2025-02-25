@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 
+
+// erm what the sigma my code isn't pushing
 // Create a style element for plain CSS
 const styles = `
   :root {
@@ -62,7 +64,7 @@ const styles = `
   }
 
   .btn-group {
-    display: flex;
+    display: flex; 
     gap: 8px;
   }
 
@@ -931,7 +933,7 @@ const App = () => {
                 </div>
 
                 <div className="history-title">
-                  <span style={{ marginRight: '8px' }}>📅</span> Game History
+                  <span style={{ marginRight: '8px' }}>📅</span> Game History 
                 </div>
 
                 {detailedStats.history.length === 0 ? (

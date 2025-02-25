@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-
-// erm what the sigma my code isn't pushing bruh
 // Create a style element for plain CSS
 const styles = `
   :root {
@@ -64,7 +62,7 @@ const styles = `
   }
 
   .btn-group {
-    display: flex; 
+    display: flex;
     gap: 8px;
   }
 
@@ -443,6 +441,17 @@ const styles = `
   }
 `;
 
+// Helper function to fix floating point errors
+const fixFloatingPoint = (number) => {
+  // Convert to number in case it's a string, then round to 2 decimal places
+  return Math.round((parseFloat(number) + Number.EPSILON) * 100) / 100;
+};
+
+// Format currency with two decimal places
+const formatCurrency = (amount) => {
+  return parseFloat(amount).toFixed(2);
+};
+
 const App = () => {
   const [players, setPlayers] = useState([]);
   const [groups, setGroups] = useState([]);
@@ -472,8 +481,20 @@ const App = () => {
   };
 
   const savePlayers = (updatedPlayers) => {
-    setPlayers(updatedPlayers);
-    localStorage.setItem("players", JSON.stringify(updatedPlayers));
+    // Fix any floating point errors in player data
+    const fixedPlayers = updatedPlayers.map(player => ({
+      ...player,
+      totalMoney: fixFloatingPoint(player.totalMoney),
+      history: player.history.map(game => ({
+        ...game,
+        amount: fixFloatingPoint(game.amount),
+        buyIn: fixFloatingPoint(game.buyIn),
+        netResult: fixFloatingPoint(game.netResult)
+      }))
+    }));
+    
+    setPlayers(fixedPlayers);
+    localStorage.setItem("players", JSON.stringify(fixedPlayers));
     updateLeaderboard();
   };
 
@@ -541,17 +562,22 @@ const App = () => {
       return;
     }
 
-    const parsedAmount = parseFloat(amount);
-    const parsedBuyIn = parseFloat(buyIn);
-    const netResult = parsedAmount - parsedBuyIn;
+    // Fix floating point errors by rounding to 2 decimal places
+    const parsedAmount = fixFloatingPoint(amount);
+    const parsedBuyIn = fixFloatingPoint(buyIn);
+    const netResult = fixFloatingPoint(parsedAmount - parsedBuyIn);
+    
     const timestamp = new Date().toISOString();
     const gameId = `${groupId}-${timestamp}`;
 
     const updatedPlayers = players.map((player, index) => {
       if (index === parseInt(playerId)) {
+        // Fix potential floating point errors when adding to totalMoney
+        const newTotalMoney = fixFloatingPoint(player.totalMoney + netResult);
+        
         return {
           ...player,
-          totalMoney: player.totalMoney + netResult,
+          totalMoney: newTotalMoney,
           gamesPlayed: player.gamesPlayed + 1,
           winCount: netResult > 0 ? player.winCount + 1 : player.winCount,
           history: [
@@ -787,6 +813,7 @@ const App = () => {
 
                 <input
                   type="number"
+                  step="0.01"
                   placeholder="Amount (Cashout)"
                   value={moneyUpdate.amount}
                   onChange={(e) =>
@@ -812,6 +839,7 @@ const App = () => {
 
                 <input
                   type="number"
+                  step="0.01"
                   placeholder="Buy-in Amount"
                   value={moneyUpdate.buyIn}
                   onChange={(e) =>
@@ -875,7 +903,7 @@ const App = () => {
                               player.totalMoney >= 0 ? "positive" : "negative"
                             }
                           >
-                            ${player.totalMoney}
+                            ${formatCurrency(player.totalMoney)}
                           </span>
                         </div>
                       ))}
@@ -920,7 +948,7 @@ const App = () => {
                 <div className="stats-grid">
                   <div className="stat-card stat-card-money">
                     <div className="stat-label">Total Money</div>
-                    <div className="stat-value">${detailedStats.totalMoney}</div>
+                    <div className="stat-value">${formatCurrency(detailedStats.totalMoney)}</div>
                   </div>
                   <div className="stat-card stat-card-games">
                     <div className="stat-label">Games Played</div>
@@ -933,7 +961,7 @@ const App = () => {
                 </div>
 
                 <div className="history-title">
-                  <span style={{ marginRight: '8px' }}>📅</span> Game History 
+                  <span style={{ marginRight: '8px' }}>📅</span> Game History
                 </div>
 
                 {detailedStats.history.length === 0 ? (
@@ -946,8 +974,8 @@ const App = () => {
                           {new Date(game.timestamp).toLocaleString()}
                         </div>
                         <div className="history-details">
-                          <div className="history-detail">Buy-in: ${game.buyIn}</div>
-                          <div className="history-detail">Cashout: ${game.amount}</div>
+                          <div className="history-detail">Buy-in: ${formatCurrency(game.buyIn)}</div>
+                          <div className="history-detail">Cashout: ${formatCurrency(game.amount)}</div>
                         </div>
                         <div
                           className={`history-result ${
@@ -955,16 +983,11 @@ const App = () => {
                           }`}
                         >
                           {game.netResult >= 0 ? "Profit" : "Loss"}: $
-                          {Math.abs(game.netResult)}
+                          {formatCurrency(Math.abs(game.netResult))}
                         </div>
                         {game.position && (
                           <div className="history-meta">
                             Position: {game.position}
-                          </div>
-                        )}
-                        {game.notes && (
-                          <div className="history-meta">
-                            Notes: {game.notes}
                           </div>
                         )}
                       </div>

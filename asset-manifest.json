@@ -1,24 +1,15 @@
 {
   "files": {
-    "main.css": "/params-poker-tracker/static/css/main.5ecd60fb.chunk.css",
-    "main.js": "/params-poker-tracker/static/js/main.e7f397e2.chunk.js",
-    "main.js.map": "/params-poker-tracker/static/js/main.e7f397e2.chunk.js.map",
-    "runtime-main.js": "/params-poker-tracker/static/js/runtime-main.e1f89a03.js",
-    "runtime-main.js.map": "/params-poker-tracker/static/js/runtime-main.e1f89a03.js.map",
-    "static/js/2.05245c5c.chunk.js": "/params-poker-tracker/static/js/2.05245c5c.chunk.js",
-    "static/js/2.05245c5c.chunk.js.map": "/params-poker-tracker/static/js/2.05245c5c.chunk.js.map",
-    "static/js/3.162c8b78.chunk.js": "/params-poker-tracker/static/js/3.162c8b78.chunk.js",
-    "static/js/3.162c8b78.chunk.js.map": "/params-poker-tracker/static/js/3.162c8b78.chunk.js.map",
+    "main.css": "/params-poker-tracker/static/css/main.e6c13ad2.css",
+    "main.js": "/params-poker-tracker/static/js/main.e6073793.js",
+    "static/js/488.e75445ad.chunk.js": "/params-poker-tracker/static/js/488.e75445ad.chunk.js",
     "index.html": "/params-poker-tracker/index.html",
-    "precache-manifest.4ddb3b81877b414f5666c88e3f2183e2.js": "/params-poker-tracker/precache-manifest.4ddb3b81877b414f5666c88e3f2183e2.js",
-    "service-worker.js": "/params-poker-tracker/service-worker.js",
-    "static/css/main.5ecd60fb.chunk.css.map": "/params-poker-tracker/static/css/main.5ecd60fb.chunk.css.map",
-    "static/js/2.05245c5c.chunk.js.LICENSE.txt": "/params-poker-tracker/static/js/2.05245c5c.chunk.js.LICENSE.txt"
+    "main.e6c13ad2.css.map": "/params-poker-tracker/static/css/main.e6c13ad2.css.map",
+    "main.e6073793.js.map": "/params-poker-tracker/static/js/main.e6073793.js.map",
+    "488.e75445ad.chunk.js.map": "/params-poker-tracker/static/js/488.e75445ad.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/runtime-main.e1f89a03.js",
-    "static/js/2.05245c5c.chunk.js",
-    "static/css/main.5ecd60fb.chunk.css",
-    "static/js/main.e7f397e2.chunk.js"
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.e6073793.js"
   ]
 }

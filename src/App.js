@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 
-// erm what the sigma my code isn't pushing
+// erm what the sigma my code isn't pushing bruh
 // Create a style element for plain CSS
 const styles = `
   :root {

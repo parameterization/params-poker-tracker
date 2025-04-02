@@ -1,4 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 // Create a style element for plain CSS
 const styles = `
@@ -439,6 +460,130 @@ const styles = `
     text-align: center;
     color: var(--gray-700);
   }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: var(--radius);
+    position: relative;
+    max-width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    width: 800px;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: var(--gray-700);
+  }
+
+  .modal-close:hover {
+    color: var(--gray-900);
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-top: 20px;
+  }
+
+  @media (min-width: 768px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .stats-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 15px;
+    box-shadow: var(--shadow);
+  }
+
+  .stats-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+  }
+
+  .stats-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gray-900);
+  }
+
+  .stats-label {
+    font-size: 0.9rem;
+    color: var(--gray-700);
+  }
+
+  .money-amount {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-right: 10px;
+  }
+
+  .form-grid {
+    display: grid;
+    gap: 15px;
+  }
+
+  .form-grid .form-group {
+    margin-bottom: 0;
+  }
+
+  .form-grid button {
+    grid-column: 1 / -1;
+  }
+
+  .list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  .list-item:last-child {
+    border-bottom: none;
+  }
+
+  .list-item-name {
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--primary-color);
+  }
+
+  .list-item-name:hover {
+    text-decoration: underline;
+  }
+
+  .btn-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
 `;
 
 // Helper function to fix floating point errors
@@ -450,6 +595,53 @@ const fixFloatingPoint = (number) => {
 // Format currency with two decimal places
 const formatCurrency = (amount) => {
   return parseFloat(amount).toFixed(2);
+};
+
+const PlayerGraph = ({ player, transactions }) => {
+  const data = {
+    labels: player.history.map(h => new Date(h.timestamp).toLocaleDateString()),
+    datasets: [
+      {
+        label: player.name,
+        data: player.history.map(h => h.netResult),
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: `${player.name}'s Money Over Time`,
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
+  };
+
+  return <Line options={options} data={data} />;
+};
+
+const Modal = ({ isOpen, onClose, children }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <button className="modal-close" onClick={onClose}>×</button>
+        {children}
+      </div>
+    </div>
+  );
 };
 
 const App = () => {
@@ -467,6 +659,15 @@ const App = () => {
   const [detailedStats, setDetailedStats] = useState(null);
   const [page, setPage] = useState(0);
   const pageSize = 10;
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedGroup, setSelectedGroup] = useState(null);
+  const [transactions, setTransactions] = useState([]);
+
+  // Move updateLeaderboard before useEffect and wrap in useCallback
+  const updateLeaderboard = useCallback(() => {
+    setLeaderboard([...players].sort((a, b) => b.totalMoney - a.totalMoney));
+  }, [players]);
 
   useEffect(() => {
     const storedPlayers = localStorage.getItem("players");
@@ -474,11 +675,7 @@ const App = () => {
     if (storedPlayers) setPlayers(JSON.parse(storedPlayers));
     if (storedGroups) setGroups(JSON.parse(storedGroups));
     updateLeaderboard();
-  }, []);
-
-  const updateLeaderboard = () => {
-    setLeaderboard([...players].sort((a, b) => b.totalMoney - a.totalMoney));
-  };
+  }, [updateLeaderboard]);
 
   const savePlayers = (updatedPlayers) => {
     // Fix any floating point errors in player data
@@ -525,23 +722,15 @@ const App = () => {
   };
 
   const addGroup = (name) => {
-    const trimmedName = name.trim();
-    if (!trimmedName) return;
-    if (
-      groups.some((g) => g.name.toLowerCase() === trimmedName.toLowerCase())
-    ) {
-      alert("Group already exists");
-      return;
-    }
-    saveGroups([
-      ...groups,
-      {
-        name: trimmedName,
-        totalPot: 0,
-        gamesPlayed: 0,
-        history: [],
-      },
-    ]);
+    const newGroup = {
+      name,
+      members: [],
+      totalMoney: 0,
+      createdAt: new Date().toISOString(),
+    };
+    const updatedGroups = [...groups, newGroup];
+    setGroups(updatedGroups);
+    saveGroups(updatedGroups);
   };
 
   const deletePlayer = (index) => {
@@ -552,6 +741,10 @@ const App = () => {
   const deleteGroup = (index) => {
     const newGroups = groups.filter((_, i) => i !== index);
     saveGroups(newGroups);
+  };
+
+  const saveTransactions = (updatedTransactions) => {
+    localStorage.setItem("transactions", JSON.stringify(updatedTransactions));
   };
 
   const handleMoneyUpdate = (e) => {
@@ -597,13 +790,20 @@ const App = () => {
       return player;
     });
 
+    const newTransaction = {
+      player: players[parseInt(playerId)].name,
+      amount: netResult,
+      group: groups[parseInt(groupId)].name,
+      date: timestamp,
+    };
+
+    setPlayers(updatedPlayers);
+    setTransactions([newTransaction, ...transactions]);
     savePlayers(updatedPlayers);
+    saveTransactions([newTransaction, ...transactions]);
     updateLeaderboard();
 
-    if (
-      detailedStats &&
-      parseInt(playerId) === players.indexOf(detailedStats)
-    ) {
+    if (detailedStats && parseInt(playerId) === players.indexOf(detailedStats)) {
       showPlayerStats(updatedPlayers[parseInt(playerId)]);
     }
 
@@ -615,10 +815,39 @@ const App = () => {
       position: "",
       notes: "",
     });
+
+    e.target.reset();
+  };
+
+  const handlePlayerClick = (player) => {
+    setSelectedPlayer(player);
+    setIsModalOpen(true);
   };
 
   const showPlayerStats = (player) => {
-    setDetailedStats(player);
+    handlePlayerClick(player);
+  };
+
+  const handleGroupClick = (group) => {
+    setSelectedGroup(group);
+    setIsModalOpen(true);
+  };
+
+  const calculateGroupStats = (group) => {
+    const groupTrans = transactions.filter(t => t.group === group.name);
+    const totalMoney = groupTrans.reduce((acc, t) => acc + t.amount, 0);
+    const memberCount = group.members.length;
+    const averageTransaction = totalMoney / (groupTrans.length || 1);
+
+    return {
+      totalMoney,
+      memberCount,
+      transactionCount: groupTrans.length,
+      averageTransaction,
+      lastTransaction: groupTrans.length > 0
+        ? new Date(groupTrans[groupTrans.length - 1].date).toLocaleDateString()
+        : 'Never',
+    };
   };
 
   return (
@@ -775,13 +1004,25 @@ const App = () => {
                   ) : (
                     groups.map((group, index) => (
                       <div key={index} className="list-item">
-                        <span className="list-item-name">{group.name}</span>
-                        <button
-                          onClick={() => deleteGroup(index)}
-                          className="btn-delete"
-                        >
-                          ✕
-                        </button>
+                        <span className="list-item-name" onClick={() => handleGroupClick(group)}>
+                          {group.name}
+                        </span>
+                        <div className="btn-group">
+                          <button className="btn btn-warning" onClick={() => {
+                            const memberName = prompt('Enter member name:');
+                            if (memberName) {
+                              const updatedGroups = [...groups];
+                              updatedGroups[index].members.push(memberName);
+                              setGroups(updatedGroups);
+                              saveGroups(updatedGroups);
+                            }
+                          }}>
+                            Add Member
+                          </button>
+                          <button className="btn btn-danger" onClick={() => deleteGroup(index)}>
+                            Delete
+                          </button>
+                        </div>
                       </div>
                     ))
                   )}
@@ -796,81 +1037,89 @@ const App = () => {
             </div>
             <div className="card-body">
               <form onSubmit={handleMoneyUpdate} className="form-grid">
-                <select
-                  value={moneyUpdate.playerId}
-                  onChange={(e) =>
-                    setMoneyUpdate({ ...moneyUpdate, playerId: e.target.value })
-                  }
-                  className="form-input"
-                >
-                  <option value="">Select Player</option>
-                  {players.map((player, index) => (
-                    <option key={index} value={index}>
-                      {player.name}
-                    </option>
-                  ))}
-                </select>
-
-                <input
-                  type="number"
-                  step="0.01"
-                  placeholder="Amount (Cashout)"
-                  value={moneyUpdate.amount}
-                  onChange={(e) =>
-                    setMoneyUpdate({ ...moneyUpdate, amount: e.target.value })
-                  }
-                  className="form-input"
-                />
-
-                <select
-                  value={moneyUpdate.groupId}
-                  onChange={(e) =>
-                    setMoneyUpdate({ ...moneyUpdate, groupId: e.target.value })
-                  }
-                  className="form-input"
-                >
-                  <option value="">Select Group</option>
-                  {groups.map((group, index) => (
-                    <option key={index} value={index}>
-                      {group.name}
-                    </option>
-                  ))}
-                </select>
-
-                <input
-                  type="number"
-                  step="0.01"
-                  placeholder="Buy-in Amount"
-                  value={moneyUpdate.buyIn}
-                  onChange={(e) =>
-                    setMoneyUpdate({ ...moneyUpdate, buyIn: e.target.value })
-                  }
-                  className="form-input"
-                />
-
-                <input
-                  placeholder="Position (e.g., 1st, 2nd)"
-                  value={moneyUpdate.position}
-                  onChange={(e) =>
-                    setMoneyUpdate({ ...moneyUpdate, position: e.target.value })
-                  }
-                  className="form-input"
-                />
-
-                <input
-                  placeholder="Notes"
-                  value={moneyUpdate.notes}
-                  onChange={(e) =>
-                    setMoneyUpdate({ ...moneyUpdate, notes: e.target.value })
-                  }
-                  className="form-input"
-                />
-
-                <div className="full-width">
-                  <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>
-                    Update Money
-                  </button>
+                <div className="form-group">
+                  <select
+                    value={moneyUpdate.playerId}
+                    onChange={(e) =>
+                      setMoneyUpdate({ ...moneyUpdate, playerId: e.target.value })
+                    }
+                    className="form-input"
+                    required
+                  >
+                    <option value="">Select Player</option>
+                    {players.map((player, index) => (
+                      <option key={index} value={index}>
+                        {player.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
+                <div className="form-group">
+                  <select
+                    value={moneyUpdate.groupId}
+                    onChange={(e) =>
+                      setMoneyUpdate({ ...moneyUpdate, groupId: e.target.value })
+                    }
+                    className="form-input"
+                    required
+                  >
+                    <option value="">Select Group</option>
+                    {groups.map((group, index) => (
+                      <option key={index} value={index}>
+                        {group.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder="Amount (Cashout)"
+                    value={moneyUpdate.amount}
+                    onChange={(e) =>
+                      setMoneyUpdate({ ...moneyUpdate, amount: e.target.value })
+                    }
+                    className="form-input"
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder="Buy-in Amount"
+                    value={moneyUpdate.buyIn}
+                    onChange={(e) =>
+                      setMoneyUpdate({ ...moneyUpdate, buyIn: e.target.value })
+                    }
+                    className="form-input"
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <input
+                    placeholder="Position (e.g., 1st, 2nd)"
+                    value={moneyUpdate.position}
+                    onChange={(e) =>
+                      setMoneyUpdate({ ...moneyUpdate, position: e.target.value })
+                    }
+                    className="form-input"
+                  />
+                </div>
+                <div className="form-group">
+                  <input
+                    placeholder="Notes"
+                    value={moneyUpdate.notes}
+                    onChange={(e) =>
+                      setMoneyUpdate({ ...moneyUpdate, notes: e.target.value })
+                    }
+                    className="form-input"
+                  />
+                </div>
+                <button type="submit" className="btn btn-primary">
+                  Update
+                </button>
               </form>
             </div>
           </div>
@@ -1003,6 +1252,78 @@ const App = () => {
           Designed with ♠️ by Param Sampat
         </div>
       </div>
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        {selectedPlayer ? (
+          <div>
+            <h2>{selectedPlayer.name}'s Statistics</h2>
+            <div className="stats-grid">
+              <div className="stats-card">
+                <div className="stats-title">Current Balance</div>
+                <div className="stats-value">{formatCurrency(selectedPlayer.totalMoney)}</div>
+              </div>
+              <div className="stats-card">
+                <div className="stats-title">Games Played</div>
+                <div className="stats-value">{selectedPlayer.gamesPlayed}</div>
+              </div>
+              <div className="stats-card">
+                <div className="stats-title">Win Count</div>
+                <div className="stats-value">{selectedPlayer.winCount}</div>
+              </div>
+              <div className="stats-card">
+                <div className="stats-title">Win Rate</div>
+                <div className="stats-value">
+                  {selectedPlayer.gamesPlayed > 0
+                    ? `${((selectedPlayer.winCount / selectedPlayer.gamesPlayed) * 100).toFixed(1)}%`
+                    : '0%'}
+                </div>
+              </div>
+            </div>
+            <div style={{ marginTop: '20px' }}>
+              <PlayerGraph player={selectedPlayer} transactions={transactions.filter(t => t.player === selectedPlayer.name)} />
+            </div>
+          </div>
+        ) : selectedGroup ? (
+          <div>
+            <h2>{selectedGroup.name}'s Statistics</h2>
+            <div className="stats-grid">
+              <div className="stats-card">
+                <div className="stats-title">Total Group Money</div>
+                <div className="stats-value">{formatCurrency(calculateGroupStats(selectedGroup).totalMoney)}</div>
+              </div>
+              <div className="stats-card">
+                <div className="stats-title">Members</div>
+                <div className="stats-value">{calculateGroupStats(selectedGroup).memberCount}</div>
+              </div>
+              <div className="stats-card">
+                <div className="stats-title">Total Transactions</div>
+                <div className="stats-value">{calculateGroupStats(selectedGroup).transactionCount}</div>
+              </div>
+              <div className="stats-card">
+                <div className="stats-title">Average Transaction</div>
+                <div className="stats-value">
+                  {formatCurrency(calculateGroupStats(selectedGroup).averageTransaction)}
+                </div>
+              </div>
+            </div>
+            <div style={{ marginTop: '20px' }}>
+              <h3>Group Members</h3>
+              <div className="list-group">
+                {selectedGroup.members.map((member, index) => (
+                  <div key={index} className="list-item">
+                    <span>{member}</span>
+                    <span>{formatCurrency(
+                      transactions
+                        .filter(t => t.player === member && t.group === selectedGroup.name)
+                        .reduce((acc, t) => acc + t.amount, 0)
+                    )}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : null}
+      </Modal>
     </>
   );
 };
